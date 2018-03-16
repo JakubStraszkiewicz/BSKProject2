@@ -1,0 +1,10 @@
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\bin\Debug\BSKProject2.exe.config
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\bin\Debug\BSKProject2.exe
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\bin\Debug\BSKProject2.pdb
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.csprojResolveAssemblyReference.cache
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.Form1.resources
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.Properties.Resources.resources
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.csproj.GenerateResource.Cache
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.exe
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.pdb
+c:\users\user\documents\visual studio 2017\Projects\BSKProject2\BSKProject2\obj\Debug\BSKProject2.MainPanel.resources
