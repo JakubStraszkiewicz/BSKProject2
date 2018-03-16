@@ -39,41 +39,46 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label1.Location = new System.Drawing.Point(137, 29);
+            this.label1.Location = new System.Drawing.Point(134, 32);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 25);
+            this.label1.Size = new System.Drawing.Size(48, 20);
             this.label1.TabIndex = 0;
             this.label1.Text = "Login";
             // 
             // loginTextBox
             // 
-            this.loginTextBox.Location = new System.Drawing.Point(73, 70);
+            this.loginTextBox.Location = new System.Drawing.Point(58, 54);
+            this.loginTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.loginTextBox.Name = "loginTextBox";
-            this.loginTextBox.Size = new System.Drawing.Size(186, 22);
+            this.loginTextBox.Size = new System.Drawing.Size(200, 20);
             this.loginTextBox.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label2.Location = new System.Drawing.Point(135, 114);
+            this.label2.Location = new System.Drawing.Point(132, 87);
+            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(62, 25);
+            this.label2.Size = new System.Drawing.Size(51, 20);
             this.label2.TabIndex = 2;
             this.label2.Text = "Hasło";
             // 
             // hasloTextBox
             // 
-            this.hasloTextBox.Location = new System.Drawing.Point(73, 151);
+            this.hasloTextBox.Location = new System.Drawing.Point(58, 109);
+            this.hasloTextBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.hasloTextBox.Name = "hasloTextBox";
             this.hasloTextBox.PasswordChar = '*';
-            this.hasloTextBox.Size = new System.Drawing.Size(186, 22);
+            this.hasloTextBox.Size = new System.Drawing.Size(200, 20);
             this.hasloTextBox.TabIndex = 3;
             // 
             // zalogujButton
             // 
             this.zalogujButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.zalogujButton.Location = new System.Drawing.Point(109, 198);
+            this.zalogujButton.Location = new System.Drawing.Point(106, 145);
+            this.zalogujButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.zalogujButton.Name = "zalogujButton";
             this.zalogujButton.Size = new System.Drawing.Size(103, 31);
             this.zalogujButton.TabIndex = 4;
@@ -83,14 +88,15 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(315, 250);
+            this.ClientSize = new System.Drawing.Size(304, 201);
             this.Controls.Add(this.zalogujButton);
             this.Controls.Add(this.hasloTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.loginTextBox);
             this.Controls.Add(this.label1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);
