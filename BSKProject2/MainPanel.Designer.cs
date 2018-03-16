@@ -39,6 +39,8 @@
             this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Kod_pocztowy = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.updateButton = new System.Windows.Forms.Button();
+            this.insertButton = new System.Windows.Forms.Button();
+            this.deleteButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -49,16 +51,18 @@
             "opcja1",
             "opcja2",
             "opcja3"});
-            this.comboBox1.Location = new System.Drawing.Point(12, 12);
+            this.comboBox1.Location = new System.Drawing.Point(9, 10);
+            this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 24);
+            this.comboBox1.Size = new System.Drawing.Size(320, 21);
             this.comboBox1.TabIndex = 0;
             // 
             // editTextBox
             // 
-            this.editTextBox.Location = new System.Drawing.Point(12, 455);
+            this.editTextBox.Location = new System.Drawing.Point(9, 410);
+            this.editTextBox.Margin = new System.Windows.Forms.Padding(2);
             this.editTextBox.Name = "editTextBox";
-            this.editTextBox.Size = new System.Drawing.Size(100, 22);
+            this.editTextBox.Size = new System.Drawing.Size(76, 20);
             this.editTextBox.TabIndex = 2;
             // 
             // dataGridView1
@@ -73,12 +77,16 @@
             this.Email,
             this.Kod_pocztowy});
             this.dataGridView1.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 55);
+            this.dataGridView1.Location = new System.Drawing.Point(9, 45);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(919, 348);
+            this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataGridView1.Size = new System.Drawing.Size(764, 320);
             this.dataGridView1.TabIndex = 3;
+            this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
+            this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
             // 
             // PESEL
             // 
@@ -117,22 +125,46 @@
             // 
             // updateButton
             // 
-            this.updateButton.Location = new System.Drawing.Point(856, 512);
+            this.updateButton.Location = new System.Drawing.Point(562, 370);
+            this.updateButton.Margin = new System.Windows.Forms.Padding(2);
             this.updateButton.Name = "updateButton";
-            this.updateButton.Size = new System.Drawing.Size(75, 23);
+            this.updateButton.Size = new System.Drawing.Size(103, 31);
             this.updateButton.TabIndex = 4;
             this.updateButton.Text = "Update";
             this.updateButton.UseVisualStyleBackColor = true;
+            this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
+            // 
+            // insertButton
+            // 
+            this.insertButton.Location = new System.Drawing.Point(454, 370);
+            this.insertButton.Name = "insertButton";
+            this.insertButton.Size = new System.Drawing.Size(103, 31);
+            this.insertButton.TabIndex = 5;
+            this.insertButton.Text = "Insert";
+            this.insertButton.UseVisualStyleBackColor = true;
+            this.insertButton.Click += new System.EventHandler(this.insertButton_Click);
+            // 
+            // deleteButton
+            // 
+            this.deleteButton.Location = new System.Drawing.Point(670, 370);
+            this.deleteButton.Name = "deleteButton";
+            this.deleteButton.Size = new System.Drawing.Size(103, 31);
+            this.deleteButton.TabIndex = 6;
+            this.deleteButton.Text = "Delete";
+            this.deleteButton.UseVisualStyleBackColor = true;
             // 
             // MainPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(943, 547);
+            this.ClientSize = new System.Drawing.Size(784, 441);
+            this.Controls.Add(this.deleteButton);
+            this.Controls.Add(this.insertButton);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.editTextBox);
             this.Controls.Add(this.comboBox1);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainPanel";
             this.Text = "MainPanel";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainPanel_FormClosing);
@@ -155,5 +187,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Email;
         private System.Windows.Forms.DataGridViewTextBoxColumn Kod_pocztowy;
         private System.Windows.Forms.Button updateButton;
+        private System.Windows.Forms.Button insertButton;
+        private System.Windows.Forms.Button deleteButton;
     }
 }
