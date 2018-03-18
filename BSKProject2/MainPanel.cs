@@ -11,24 +11,6 @@ using System.Windows.Forms;
 
 namespace BSKProject2
 {
-    /// <summary>
-    /// Klasa dla listy, ktora rejestrowalaby edycje komorek poszczegolnych wierszy.
-    /// </summary>
-    class RowEditedListType
-    {
-        public int rowIndex;
-        public List<int> columnIndexes;
-
-        public RowEditedListType()
-        {
-        }
-
-        public void decrementIndex()
-        {
-            this.rowIndex--;
-        }
-    }
-
     public partial class MainPanel : Form
     {
         //// Pola stale
@@ -258,6 +240,24 @@ namespace BSKProject2
                 rowsToRemoveList.Remove(rowToRemove);
             }
             rowsSelected.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Klasa dla listy, ktora rejestrowalaby edycje komorek poszczegolnych wierszy.
+    /// </summary>
+    class RowEditedListType
+    {
+        public int rowIndex;
+        public List<int> columnIndexes;
+
+        public RowEditedListType()
+        {
+        }
+
+        public void decrementIndex()
+        {
+            this.rowIndex--;
         }
     }
 }

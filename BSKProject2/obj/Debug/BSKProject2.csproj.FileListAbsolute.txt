@@ -17,4 +17,4 @@ C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKPro
 C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKProject2\obj\Debug\BSKProject2.Form1.resources
 C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKProject2\obj\Debug\BSKProject2.Properties.Resources.resources
 C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKProject2\obj\Debug\BSKProject2.csproj.GenerateResource.Cache
-C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKProject2\obj\Debug\BSKProject2.RowEditedListType.resources
+C:\Users\Sunnivran\Desktop\Studia\Semestr 6\Projekty\BSKproj2\BSKProject2\BSKProject2\obj\Debug\BSKProject2.MainPanel.resources
