@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.editTextBox = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridCheckbox = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.PESEL = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -49,22 +48,18 @@
             // 
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
-            "opcja1",
-            "opcja2",
-            "opcja3"});
+            "Pacjenci",
+            "Karty pacjentow",
+            "Lekarze",
+            "Wizyty",
+            "Diagnozy",
+            "Recepty",
+            "Leki"});
             this.comboBox1.Location = new System.Drawing.Point(9, 10);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(320, 21);
+            this.comboBox1.Size = new System.Drawing.Size(160, 21);
             this.comboBox1.TabIndex = 0;
-            // 
-            // editTextBox
-            // 
-            this.editTextBox.Location = new System.Drawing.Point(9, 410);
-            this.editTextBox.Margin = new System.Windows.Forms.Padding(2);
-            this.editTextBox.Name = "editTextBox";
-            this.editTextBox.Size = new System.Drawing.Size(76, 20);
-            this.editTextBox.TabIndex = 2;
             // 
             // dataGridView1
             // 
@@ -84,7 +79,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(764, 320);
+            this.dataGridView1.Size = new System.Drawing.Size(764, 348);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
@@ -135,7 +130,8 @@
             // 
             // updateButton
             // 
-            this.updateButton.Location = new System.Drawing.Point(562, 370);
+            this.updateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.updateButton.Location = new System.Drawing.Point(562, 398);
             this.updateButton.Margin = new System.Windows.Forms.Padding(2);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(103, 31);
@@ -146,7 +142,8 @@
             // 
             // insertButton
             // 
-            this.insertButton.Location = new System.Drawing.Point(454, 370);
+            this.insertButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.insertButton.Location = new System.Drawing.Point(454, 398);
             this.insertButton.Name = "insertButton";
             this.insertButton.Size = new System.Drawing.Size(103, 31);
             this.insertButton.TabIndex = 5;
@@ -156,7 +153,8 @@
             // 
             // deleteButton
             // 
-            this.deleteButton.Location = new System.Drawing.Point(670, 370);
+            this.deleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.deleteButton.Location = new System.Drawing.Point(669, 398);
             this.deleteButton.Name = "deleteButton";
             this.deleteButton.Size = new System.Drawing.Size(103, 31);
             this.deleteButton.TabIndex = 6;
@@ -173,7 +171,6 @@
             this.Controls.Add(this.insertButton);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.editTextBox);
             this.Controls.Add(this.comboBox1);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainPanel";
@@ -181,14 +178,12 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainPanel_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.TextBox editTextBox;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Button insertButton;

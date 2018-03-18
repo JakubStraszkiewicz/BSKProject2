@@ -19,6 +19,15 @@ namespace BSKProject2
 
         private void zalogujButton_Click(object sender, EventArgs e)
         {
+            this.loginTextBox.Enabled = false;
+            this.hasloTextBox.Enabled = false;
+            this.zalogujButton.Enabled = false;
+            this.profilComboBox.Enabled = true;
+            this.wybierzButton.Enabled = true;
+        }
+
+        private void wybierzButton_Click(object sender, EventArgs e)
+        {
             MainPanel mainPanel = new MainPanel(this);
             mainPanel.Show();
             this.Hide();
