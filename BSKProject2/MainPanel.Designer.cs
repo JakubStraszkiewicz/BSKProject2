@@ -31,6 +31,7 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.editTextBox = new System.Windows.Forms.TextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridCheckbox = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.PESEL = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Imie = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Nazwisko = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -69,6 +70,7 @@
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridCheckbox,
             this.PESEL,
             this.Imie,
             this.Nazwisko,
@@ -87,6 +89,14 @@
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
             this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
+            // 
+            // dataGridCheckbox
+            // 
+            this.dataGridCheckbox.HeaderText = "";
+            this.dataGridCheckbox.Name = "dataGridCheckbox";
+            this.dataGridCheckbox.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridCheckbox.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.dataGridCheckbox.Width = 20;
             // 
             // PESEL
             // 
@@ -152,6 +162,7 @@
             this.deleteButton.TabIndex = 6;
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
+            this.deleteButton.Click += new System.EventHandler(this.deleteButton_Click);
             // 
             // MainPanel
             // 
@@ -179,6 +190,10 @@
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.TextBox editTextBox;
         private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Button updateButton;
+        private System.Windows.Forms.Button insertButton;
+        private System.Windows.Forms.Button deleteButton;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridCheckbox;
         private System.Windows.Forms.DataGridViewTextBoxColumn PESEL;
         private System.Windows.Forms.DataGridViewTextBoxColumn Imie;
         private System.Windows.Forms.DataGridViewTextBoxColumn Nazwisko;
@@ -186,8 +201,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Nr_telefonu;
         private System.Windows.Forms.DataGridViewTextBoxColumn Email;
         private System.Windows.Forms.DataGridViewTextBoxColumn Kod_pocztowy;
-        private System.Windows.Forms.Button updateButton;
-        private System.Windows.Forms.Button insertButton;
-        private System.Windows.Forms.Button deleteButton;
     }
 }
