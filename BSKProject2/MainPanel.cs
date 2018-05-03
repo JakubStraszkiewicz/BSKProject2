@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace BSKProject2
 {
@@ -35,18 +36,38 @@ namespace BSKProject2
             rowsEdited = new List<RowEditedListType>();
             rowsAdded = new List<int>();
             rowsSelected = new List<int>();
+            
+            SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
 
-            object[] data1 = { false, "987456123", "Jan", "Kowalski", "1999.01.07", "547896213", "jan_kowalski@wp.pl", "54-778" };
-            object[] data2 = { false, "213443543", "Ewa", "Nowak", "1984.03.25", "786046477", "ewa.nowak@gmail.com", "63-018" };
-            object[] data3 = { false, "875675676", "Bartosz", "Adamski", "1968.11.30", "688748209", "b.adamski@op.pl", "24-358" };
-            object[] data4 = { false, "765857645", "Joanna", "Nowicka", "1990.06.15", "786138445", "joanow@vp.pl", "87-735" };
-            object[] data5 = { false, "487477967", "Mateusz", "Kaczmarek", "1956.08.05", "845314065", "thelegend27@wp.pl", "35-578" };
+                SqlDataReader sqlReader = null;
+                string command = "SELECT Tabele.nazwa"
+                    + " FROM _Role, Role_Tabele, Tabele"
+                    + " WHERE _Role.nazwa='" + this.mainForm.chosenProfile + "'"
+                        + " AND Role_Tabele.selects='true'"
+                        + " AND Role_Tabele.FK_Rola=_Role.Id_roli"
+                        + " AND Role_Tabele.FK_Tabela=Tabele.Id_tabeli;";
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
 
-            dataGridView1.Rows.Add(data1);
-            dataGridView1.Rows.Add(data2);
-            dataGridView1.Rows.Add(data3);
-            dataGridView1.Rows.Add(data4);
-            dataGridView1.Rows.Add(data5);
+                while(sqlReader.Read())
+                {
+                    this.comboBox1.Items.Add(sqlReader[0]);
+                }
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
 
         private void MainPanel_FormClosing(object sender, FormClosingEventArgs e)
@@ -141,6 +162,11 @@ namespace BSKProject2
                 return;
             
             RowEditedListType newRowEdited = new RowEditedListType();
+            if (e.ColumnIndex == 1)
+                newRowEdited.primaryKey = beforeEditCellValue;
+            else
+                newRowEdited.primaryKey = dataGridView1.Rows[e.RowIndex].Cells[1].Value;
+            newRowEdited.primaryKeyColumnName = dataGridView1.Columns[1].Name;
             newRowEdited.rowIndex = e.RowIndex;
             newRowEdited.columnIndexes.Add(e.ColumnIndex);
 
@@ -150,19 +176,92 @@ namespace BSKProject2
 
         private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
         {
-            if (e.RowIndex == dataGridView1.NewRowIndex)
+            if (e.RowIndex == dataGridView1.NewRowIndex && e.RowIndex != 0)
                 this.rowsAdded.Add(e.RowIndex - 1); //wykryto nowy wiersz, ALE nie ten co modyfikujemy, a nastepny zaraz za nim!
+        }
+
+        private List<String> listOfColumnTypes()
+        {
+            List<String> listOfTypes = new List<String>();
+            SqlConnection sqlConnection = new SqlConnection(
+                    "Data Source=SUNNIVRANDELL;" +
+                    "Initial Catalog=BSKproj2;" +
+                    "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "SELECT *"
+                    + " FROM " + this.comboBox1.SelectedItem.ToString();
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                int numberOfColumns = sqlReader.FieldCount;
+                for (int i = 0; i < numberOfColumns; i++)
+                {
+                    listOfTypes.Add(sqlReader.GetDataTypeName(i));
+                }
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return listOfTypes;
         }
 
         private void insertButton_Click(object sender, EventArgs e)
         {
             //Zaladowanie do bazy nowych wierszy
             //Nalezy wykorzystac rowsAdded
+            List<String> listOfTypes = listOfColumnTypes();
+
             foreach (int rowIndex in rowsAdded)
             {
+                string insertCommand = "INSERT INTO " + this.comboBox1.SelectedItem.ToString() + " VALUES(";
                 int numberOfCells = dataGridView1.Rows[rowIndex].Cells.Count;
-                for (int j = 0; j < numberOfCells; j++)
+                for (int j = 1; j < numberOfCells; j++)
+                {
                     dataGridView1.Rows[rowIndex].Cells[j].Style.BackColor = DefaultBackColor;
+                    if (j == 1)
+                        if (listOfTypes[j - 1] == "int")
+                            insertCommand += dataGridView1.Rows[rowIndex].Cells[j].Value.ToString();
+                        else
+                            insertCommand += "'" + dataGridView1.Rows[rowIndex].Cells[j].Value.ToString() + "'";
+                    else
+                        if (listOfTypes[j - 1] == "int")
+                            insertCommand += "," + dataGridView1.Rows[rowIndex].Cells[j].Value.ToString();
+                        else
+                            insertCommand += ",'" + dataGridView1.Rows[rowIndex].Cells[j].Value.ToString() + "'";   
+                }
+                insertCommand += ");";
+
+                SqlConnection sqlConnection = new SqlConnection(
+                    "Data Source=SUNNIVRANDELL;" +
+                    "Initial Catalog=BSKproj2;" +
+                    "Trusted_Connection=yes;");
+                try
+                {
+                    sqlConnection.Open();
+
+                    SqlDataReader sqlReader = null;
+                    string command = insertCommand;
+                    SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                    sqlReader = sqlCommand.ExecuteReader();
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             rowsAdded.Clear();
@@ -172,12 +271,63 @@ namespace BSKProject2
         {
             //Zaladowanie do bazy zuaktualizowane wiersze
             //Nalezy wykorzystac rowsEdited
+            List<String> listOfTypes = listOfColumnTypes();
+
             foreach (RowEditedListType row in rowsEdited)
             {
+                string updateCommand = "UPDATE " + this.comboBox1.SelectedItem.ToString() + " SET";
+                bool firstParam = true;
                 foreach (int columnIndex in row.columnIndexes)
+                {
                     dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Style.BackColor = DefaultBackColor;
-            }
+                    if(firstParam==true)
+                    {
+                        if(listOfTypes[columnIndex-1]=="int")
+                            updateCommand += " " + dataGridView1.Columns[columnIndex].Name + "="
+                                + dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Value.ToString();
+                        else
+                            updateCommand += " " + dataGridView1.Columns[columnIndex].Name + "="
+                                +"'"+dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Value.ToString()+"'";
+                        
+                        firstParam=false;
+                    }
+                    else
+                        if (listOfTypes[columnIndex - 1] == "int")
+                            updateCommand += ", " + dataGridView1.Columns[columnIndex].Name + "="
+                                + dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Value.ToString();
+                        else
+                            updateCommand += ", " + dataGridView1.Columns[columnIndex].Name + "="
+                                + "'" + dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Value.ToString() + "'";
+                }
+                updateCommand += " WHERE " + row.primaryKeyColumnName+"=";
+                if (listOfTypes[0] == "int")
+                    updateCommand += row.primaryKey;
+                else
+                    updateCommand += "'"+row.primaryKey+"'";
 
+                SqlConnection sqlConnection = new SqlConnection(
+                    "Data Source=SUNNIVRANDELL;" +
+                    "Initial Catalog=BSKproj2;" +
+                    "Trusted_Connection=yes;");
+                try
+                {
+                    sqlConnection.Open();
+
+                    SqlDataReader sqlReader = null;
+                    string command = updateCommand;
+                    SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                    sqlReader = sqlCommand.ExecuteReader();
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
             rowsEdited.Clear();
         }
 
@@ -207,10 +357,12 @@ namespace BSKProject2
         {
             foreach (DataGridViewRow rowToRemove in rowsToRemoveList.ToList())
             {
+                string deleteCommandCondition = dataGridView1.Columns[1].Name+"="+rowToRemove.Cells[1].Value.ToString();
                 foreach (RowEditedListType editedRow in rowsEdited.ToList())
                 {
                     if (editedRow.rowIndex == rowToRemove.Index) //Usuniecie edytowanego wiersza
                     {
+                        deleteCommandCondition = dataGridView1.Columns[1].Name + "=" + editedRow.primaryKey;
                         rowsEdited.Remove(editedRow);
                         for (int i = 0; i < rowsEdited.Count; i++)
                         {
@@ -219,6 +371,30 @@ namespace BSKProject2
                         }
                         break;
                     }
+                }
+
+                SqlConnection sqlConnection = new SqlConnection(
+                    "Data Source=SUNNIVRANDELL;" +
+                    "Initial Catalog=BSKproj2;" +
+                    "Trusted_Connection=yes;");
+                try
+                {
+                    sqlConnection.Open();
+
+                    SqlDataReader sqlReader = null;
+                    string command = "DELETE FROM "+this.comboBox1.SelectedItem.ToString()
+                        +" WHERE "+deleteCommandCondition;
+                    SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                    sqlReader = sqlCommand.ExecuteReader();
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+
+                    sqlConnection.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
                 }
 
                 dataGridView1.Rows.Remove(rowToRemove);
@@ -239,6 +415,55 @@ namespace BSKProject2
 
             rowsSelected.Clear();
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.rowsAdded.Clear();
+            this.rowsEdited.Clear();
+            this.rowsSelected.Clear();
+            this.dataGridView1.Columns.Clear();
+            this.dataGridView1.Columns.Add(new DataGridViewCheckBoxColumn());
+            this.dataGridView1.Columns[0].Width = 20;
+
+            SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "SELECT *"
+                    + " FROM " + this.comboBox1.SelectedItem.ToString();
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+                
+                int numberOfColumns = sqlReader.FieldCount;
+                for(int i=0; i<numberOfColumns; i++)
+                {
+                    this.dataGridView1.Columns.Add(sqlReader.GetName(i),sqlReader.GetName(i));
+                }
+                while (sqlReader.Read())
+                {
+                    object[] data = new object[numberOfColumns+1];
+                    data[0] = false;
+                    for(int i=0; i<numberOfColumns; i++)
+                    {
+                        data[i+1]= sqlReader[i];
+                    }
+                    dataGridView1.Rows.Add(data);
+                }
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
     }
 
     /// <summary>
@@ -246,6 +471,8 @@ namespace BSKProject2
     /// </summary>
     class RowEditedListType
     {
+        public object primaryKey;
+        public string primaryKeyColumnName;
         public int rowIndex;
         public List<int> columnIndexes;
 

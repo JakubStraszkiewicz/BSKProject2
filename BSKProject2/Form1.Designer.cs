@@ -93,11 +93,6 @@
             // 
             this.profilComboBox.Enabled = false;
             this.profilComboBox.FormattingEnabled = true;
-            this.profilComboBox.Items.AddRange(new object[] {
-            "Lekarz",
-            "Recepcjonista",
-            "Pacjent",
-            "Administrator"});
             this.profilComboBox.Location = new System.Drawing.Point(81, 185);
             this.profilComboBox.Name = "profilComboBox";
             this.profilComboBox.Size = new System.Drawing.Size(200, 21);
