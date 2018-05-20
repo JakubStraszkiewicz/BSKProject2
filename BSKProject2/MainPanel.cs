@@ -70,9 +70,47 @@ namespace BSKProject2
             }
         }
 
+        private void logoutFromDatabase()
+        {
+            SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "UPDATE Uzytkownicy"
+                    + " SET czy_zalogowany='false'"
+                    + " WHERE _login='" + this.mainForm.userLogin + "'"
+                        + " AND haslo='" + this.mainForm.userPassword + "'";
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         private void MainPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
+            logoutFromDatabase();
             this.mainForm.Close();
+        }
+
+        private void wylogujButton_Click(object sender, EventArgs e)
+        {
+            logoutFromDatabase();
+            this.mainForm.resetWindow();
+            this.mainForm.Show();
+            this.Hide();
         }
 
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -88,6 +126,106 @@ namespace BSKProject2
             catch (NullReferenceException ex)
             {
                 this.beforeEditCellValue = tempCellValue; //nadajemy im sztucznie wartosc;
+            }
+        }
+
+        private void roleButtonsProtecting()
+        {
+            SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "SELECT Role_Tabele.inserts,Role_Tabele.updates,Role_Tabele.deletes"
+                    + " FROM _Role, Tabele, Role_Tabele "
+                    + " WHERE _Role.nazwa='"+this.mainForm.chosenProfile+"' AND Tabele.nazwa='"+this.comboBox1.SelectedItem.ToString()+"'" 
+                        +" AND _Role.Id_roli=Role_Tabele.FK_Rola AND Tabele.Id_tabeli=Role_Tabele.FK_Tabela";
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                sqlReader.Read();
+
+                //inserts
+                if (sqlReader[0].Equals("true"))
+                    this.insertButton.Enabled = true;
+                else
+                    this.insertButton.Enabled = false;
+
+                //updates
+                if (sqlReader[1].Equals("true"))
+                    this.updateButton.Enabled = true;
+                else
+                    this.updateButton.Enabled = false;
+
+                //deletes
+                if (sqlReader[2].Equals("true"))
+                    this.deleteButton.Enabled = true;
+                else
+                    this.deleteButton.Enabled = false;
+
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            roleButtonsProtecting();
+
+            this.rowsAdded.Clear();
+            this.rowsEdited.Clear();
+            this.rowsSelected.Clear();
+            this.dataGridView1.Columns.Clear();
+            this.dataGridView1.Columns.Add(new DataGridViewCheckBoxColumn());
+            this.dataGridView1.Columns[0].Width = 20;
+
+            SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
+            try
+            {
+                sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "SELECT *"
+                    + " FROM " + this.comboBox1.SelectedItem.ToString();
+                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                int numberOfColumns = sqlReader.FieldCount;
+                for (int i = 0; i < numberOfColumns; i++)
+                {
+                    this.dataGridView1.Columns.Add(sqlReader.GetName(i), sqlReader.GetName(i));
+                }
+                while (sqlReader.Read())
+                {
+                    object[] data = new object[numberOfColumns + 1];
+                    data[0] = false;
+                    for (int i = 0; i < numberOfColumns; i++)
+                    {
+                        data[i + 1] = sqlReader[i];
+                    }
+                    dataGridView1.Rows.Add(data);
+                }
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -280,6 +418,7 @@ namespace BSKProject2
                 foreach (int columnIndex in row.columnIndexes)
                 {
                     dataGridView1.Rows[row.rowIndex].Cells[columnIndex].Style.BackColor = DefaultBackColor;
+
                     if(firstParam==true)
                     {
                         if(listOfTypes[columnIndex-1]=="int")
@@ -328,6 +467,7 @@ namespace BSKProject2
                     Console.WriteLine(ex.ToString());
                 }
             }
+
             rowsEdited.Clear();
         }
 
@@ -414,55 +554,6 @@ namespace BSKProject2
             deleteButton_handleEditedRowRemove(rowsToRemoveList);
 
             rowsSelected.Clear();
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.rowsAdded.Clear();
-            this.rowsEdited.Clear();
-            this.rowsSelected.Clear();
-            this.dataGridView1.Columns.Clear();
-            this.dataGridView1.Columns.Add(new DataGridViewCheckBoxColumn());
-            this.dataGridView1.Columns[0].Width = 20;
-
-            SqlConnection sqlConnection = new SqlConnection(
-                "Data Source=SUNNIVRANDELL;" +
-                "Initial Catalog=BSKproj2;" +
-                "Trusted_Connection=yes;");
-            try
-            {
-                sqlConnection.Open();
-
-                SqlDataReader sqlReader = null;
-                string command = "SELECT *"
-                    + " FROM " + this.comboBox1.SelectedItem.ToString();
-                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
-                sqlReader = sqlCommand.ExecuteReader();
-                
-                int numberOfColumns = sqlReader.FieldCount;
-                for(int i=0; i<numberOfColumns; i++)
-                {
-                    this.dataGridView1.Columns.Add(sqlReader.GetName(i),sqlReader.GetName(i));
-                }
-                while (sqlReader.Read())
-                {
-                    object[] data = new object[numberOfColumns+1];
-                    data[0] = false;
-                    for(int i=0; i<numberOfColumns; i++)
-                    {
-                        data[i+1]= sqlReader[i];
-                    }
-                    dataGridView1.Rows.Add(data);
-                }
-                sqlCommand.Dispose();
-                sqlReader.Close();
-
-                sqlConnection.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
         }
     }
 
