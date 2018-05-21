@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.tableComboBox = new System.Windows.Forms.ComboBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.updateButton = new System.Windows.Forms.Button();
             this.insertButton = new System.Windows.Forms.Button();
@@ -36,18 +36,19 @@
             this.consoleLabel = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.wylogujButton = new System.Windows.Forms.Button();
+            this.noweOknoButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // tableComboBox
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(9, 10);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(160, 21);
-            this.comboBox1.TabIndex = 0;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.tableComboBox.FormattingEnabled = true;
+            this.tableComboBox.Location = new System.Drawing.Point(9, 10);
+            this.tableComboBox.Margin = new System.Windows.Forms.Padding(2);
+            this.tableComboBox.Name = "tableComboBox";
+            this.tableComboBox.Size = new System.Drawing.Size(160, 21);
+            this.tableComboBox.TabIndex = 0;
+            this.tableComboBox.SelectedIndexChanged += new System.EventHandler(this.tableComboBox_SelectedIndexChanged);
             // 
             // dataGridView1
             // 
@@ -126,11 +127,22 @@
             this.wylogujButton.UseVisualStyleBackColor = true;
             this.wylogujButton.Click += new System.EventHandler(this.wylogujButton_Click);
             // 
+            // noweOknoButton
+            // 
+            this.noweOknoButton.Location = new System.Drawing.Point(175, 9);
+            this.noweOknoButton.Name = "noweOknoButton";
+            this.noweOknoButton.Size = new System.Drawing.Size(75, 23);
+            this.noweOknoButton.TabIndex = 11;
+            this.noweOknoButton.Text = "Nowe okno";
+            this.noweOknoButton.UseVisualStyleBackColor = true;
+            this.noweOknoButton.Click += new System.EventHandler(this.noweOknoButton_Click);
+            // 
             // MainPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 441);
+            this.Controls.Add(this.noweOknoButton);
             this.Controls.Add(this.wylogujButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.consoleLabel);
@@ -138,7 +150,7 @@
             this.Controls.Add(this.insertButton);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.tableComboBox);
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainPanel";
             this.Text = "MainPanel";
@@ -151,7 +163,7 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox tableComboBox;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Button insertButton;
@@ -159,5 +171,6 @@
         private System.Windows.Forms.Label consoleLabel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button wylogujButton;
+        private System.Windows.Forms.Button noweOknoButton;
     }
 }

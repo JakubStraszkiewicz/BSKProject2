@@ -8,52 +8,102 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Security.Cryptography;
 
 namespace BSKProject2
 {
     public partial class Form1 : Form
     {
-        public string chosenProfile;
-        public string userLogin;
-        public string userPassword;
+        //pola przydatne w mainPanel.
+        public string chosenProfile;    //informacja o tym jaki profil wybral uzytkownik.
+        public string userLogin;        //informacja o loginie uzytkownika.
+        public string userPassword;     //informacja o hasle uzytkownika.
+        public string userPESEL;        //informacja o PESELu uzytkownika (do tworzenia zapytan 'tylko dla siebie').
+
+        private SqlConnection sqlConnection = new SqlConnection(
+                "Data Source=SUNNIVRANDELL;" +
+                "Initial Catalog=BSKproj2;" +
+                "Trusted_Connection=yes;");
 
         public Form1()
         {
             InitializeComponent();
         }
 
+        static string HashSHA1(string input)
+        {
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder stringBuilder = new StringBuilder(hash.Length * 2);
+
+                foreach (byte singleByte in hash)
+                {
+                    stringBuilder.Append(singleByte.ToString("x2"));
+                }
+
+                return stringBuilder.ToString();
+            }
+        }
+
         private void zalogujButton_Click(object sender, EventArgs e)
         {
-            SqlConnection sqlConnection = new SqlConnection(
-                "Data Source=SUNNIVRANDELL;" +
-                "Initial Catalog=BSKproj2;" +
-                "Trusted_Connection=yes;");
+
             try
             {
-                sqlConnection.Open();
+                this.sqlConnection.Open();
 
                 SqlDataReader sqlReader = null;
-                string command = "SELECT *" 
-                    +" FROM Uzytkownicy" 
-                    +" WHERE _login='"+this.loginTextBox.Text+"'" 
-                        +" AND haslo='"+this.hasloTextBox.Text+"'";
-                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                string command = "SELECT *"
+                    + " FROM Uzytkownicy"
+                    + " WHERE _login='" + this.loginTextBox.Text + "'";
+                SqlCommand sqlCommand = new SqlCommand(command, this.sqlConnection);
                 sqlReader = sqlCommand.ExecuteReader();
-
+                
+                //sprawdzenie czy jest taki login
                 if (!sqlReader.HasRows)
                 {
                     this.loginTextBox.Text = "login lub haslo niepoprawne";
                     this.hasloTextBox.Text = "";
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+                    this.sqlConnection.Close();
+
+                    return;
+                }
+                //sprawdzenie czy haslo sie zgadza
+                sqlReader.Read();
+                if(!sqlReader[2].Equals(HashSHA1(this.hasloTextBox.Text)))
+                {
+                    this.loginTextBox.Text = "login lub haslo niepoprawne";
+                    this.hasloTextBox.Text = "";
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+                    this.sqlConnection.Close();
+
+                    return;
+                }
+                
+                //sprawdzanie czy uzytkownik nie jest juz zalogowany.
+                if(sqlReader[6].Equals("true"))
+                {
+                    this.loginTextBox.Text = "uzytkownik jest juz zalogowany";
+                    this.hasloTextBox.Text = "";
+
+                    sqlCommand.Dispose();
+                    sqlReader.Close();
+                    this.sqlConnection.Close();
+
                     return;
                 }
 
-                sqlReader.Read();
-                if(sqlReader[6].Equals("true"))
-                {
-                    this.loginTextBox.Text = "uzytkownik juz zalogowany";
-                    this.hasloTextBox.Text = "";
-                    return;
-                }
+                //zapamietanie PESELu, loginu i hasla uzytkownika.
+                this.userPESEL = sqlReader[7].ToString();
+                this.userLogin = this.loginTextBox.Text;
+                this.userPassword = this.hasloTextBox.Text;
+
                 sqlCommand.Dispose();
                 sqlReader.Close();
 
@@ -62,9 +112,10 @@ namespace BSKProject2
                     +" WHERE Uzytkownicy._login='"+this.loginTextBox.Text+"'" 
                         +" AND Uzytkownicy_Role.FK_Uzytkownik=Uzytkownicy.Id_uzytkownika" 
                         +" AND Uzytkownicy_Role.FK_Rola=_Role.Id_roli";
-                sqlCommand = new SqlCommand(command, sqlConnection);
+                sqlCommand = new SqlCommand(command, this.sqlConnection);
                 sqlReader = sqlCommand.ExecuteReader();
 
+                //sprawdzenie jakie role posiada uzytkownik.
                 while(sqlReader.Read())
                 {
                     this.profilComboBox.Items.Add(sqlReader[0]);
@@ -72,11 +123,12 @@ namespace BSKProject2
                 sqlCommand.Dispose();
                 sqlReader.Close();
 
-                sqlConnection.Close();
+                this.sqlConnection.Close();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+                return;
             }
 
             this.loginTextBox.Enabled = false;
@@ -88,40 +140,41 @@ namespace BSKProject2
 
         private void wybierzButton_Click(object sender, EventArgs e)
         {
-            SqlConnection sqlConnection = new SqlConnection(
-                "Data Source=SUNNIVRANDELL;" +
-                "Initial Catalog=BSKproj2;" +
-                "Trusted_Connection=yes;");
+            //jesli uzytkownik nie wybral zadnej roli.
+            if (this.profilComboBox.SelectedItem == null)
+                return;
+
+            //zaktualizowanie informacji w bazie o zalogowaniu uzytkownika.
             try
             {
-                sqlConnection.Open();
+                this.sqlConnection.Open();
 
                 SqlDataReader sqlReader = null;
-                string command = "UPDATE Uzytkownicy" 
-                    +" SET czy_zalogowany='true'" 
-                    +" WHERE _login='"+this.loginTextBox.Text+"'" 
-                        +" AND haslo='"+this.hasloTextBox.Text+"'";
-                SqlCommand sqlCommand = new SqlCommand(command, sqlConnection);
+                string command = "UPDATE Uzytkownicy"
+                    + " SET czy_zalogowany='true'"
+                    + " WHERE _login='" + this.loginTextBox.Text + "'";
+                SqlCommand sqlCommand = new SqlCommand(command, this.sqlConnection);
                 sqlReader = sqlCommand.ExecuteReader();
 
                 sqlCommand.Dispose();
                 sqlReader.Close();
 
-                sqlConnection.Close();
+                this.sqlConnection.Close();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
 
+            //zapamietanie wybranego profilu uzytkownika.
             this.chosenProfile = this.profilComboBox.SelectedItem.ToString();
-            this.userLogin = this.loginTextBox.Text;
-            this.userPassword = this.hasloTextBox.Text;
+
             MainPanel mainPanel = new MainPanel(this);
             mainPanel.Show();
             this.Hide();
         }
 
+        //metoda do zresetowania okna logowania po wylogowaniu uzytkownika.
         public void resetWindow()
         {
             this.loginTextBox.Enabled = true;
