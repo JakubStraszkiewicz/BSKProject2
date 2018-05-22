@@ -37,6 +37,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.wylogujButton = new System.Windows.Forms.Button();
             this.noweOknoButton = new System.Windows.Forms.Button();
+            this.odswiezButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -129,7 +130,7 @@
             // 
             // noweOknoButton
             // 
-            this.noweOknoButton.Location = new System.Drawing.Point(175, 9);
+            this.noweOknoButton.Location = new System.Drawing.Point(255, 10);
             this.noweOknoButton.Name = "noweOknoButton";
             this.noweOknoButton.Size = new System.Drawing.Size(75, 23);
             this.noweOknoButton.TabIndex = 11;
@@ -137,11 +138,22 @@
             this.noweOknoButton.UseVisualStyleBackColor = true;
             this.noweOknoButton.Click += new System.EventHandler(this.noweOknoButton_Click);
             // 
+            // odswiezButton
+            // 
+            this.odswiezButton.Location = new System.Drawing.Point(174, 10);
+            this.odswiezButton.Name = "odswiezButton";
+            this.odswiezButton.Size = new System.Drawing.Size(75, 23);
+            this.odswiezButton.TabIndex = 12;
+            this.odswiezButton.Text = "Odswiez";
+            this.odswiezButton.UseVisualStyleBackColor = true;
+            this.odswiezButton.Click += new System.EventHandler(this.odswiezButton_Click);
+            // 
             // MainPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 441);
+            this.Controls.Add(this.odswiezButton);
             this.Controls.Add(this.noweOknoButton);
             this.Controls.Add(this.wylogujButton);
             this.Controls.Add(this.label1);
@@ -172,5 +184,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button wylogujButton;
         private System.Windows.Forms.Button noweOknoButton;
+        private System.Windows.Forms.Button odswiezButton;
     }
 }

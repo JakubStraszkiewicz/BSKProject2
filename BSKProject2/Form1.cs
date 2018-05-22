@@ -14,6 +14,8 @@ namespace BSKProject2
 {
     public partial class Form1 : Form
     {
+        bool userLogInFlag = false;
+
         //pola przydatne w mainPanel.
         public string chosenProfile;    //informacja o tym jaki profil wybral uzytkownik.
         public string userLogin;        //informacja o loginie uzytkownika.
@@ -46,9 +48,62 @@ namespace BSKProject2
             }
         }
 
+        /// <summary>
+        /// Metoda do zaktualizowania informacji w bazie o zalogowaniu uzytkownika.
+        /// </summary>
+        private void loginInDatabase()
+        {
+            try
+            {
+                this.sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "UPDATE Uzytkownicy"
+                    + " SET czy_zalogowany='true'"
+                    + " WHERE _login='" + this.loginTextBox.Text + "'";
+                SqlCommand sqlCommand = new SqlCommand(command, this.sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                this.sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Metoda do zaktualizowania informacji w bazie o wylogowaniu uzytkownika.
+        /// </summary>
+        private void logoutFromDatabase()
+        {
+            try
+            {
+                this.sqlConnection.Open();
+
+                SqlDataReader sqlReader = null;
+                string command = "UPDATE Uzytkownicy"
+                    + " SET czy_zalogowany='false'"
+                    + " WHERE _login='" + this.loginTextBox.Text + "'";
+                SqlCommand sqlCommand = new SqlCommand(command, this.sqlConnection);
+                sqlReader = sqlCommand.ExecuteReader();
+
+                sqlCommand.Dispose();
+                sqlReader.Close();
+
+                this.sqlConnection.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
         private void zalogujButton_Click(object sender, EventArgs e)
         {
-
             try
             {
                 this.sqlConnection.Open();
@@ -85,7 +140,7 @@ namespace BSKProject2
 
                     return;
                 }
-                
+
                 //sprawdzanie czy uzytkownik nie jest juz zalogowany.
                 if(sqlReader[6].Equals("true"))
                 {
@@ -131,6 +186,9 @@ namespace BSKProject2
                 return;
             }
 
+            loginInDatabase();
+            userLogInFlag = true;
+
             this.loginTextBox.Enabled = false;
             this.hasloTextBox.Enabled = false;
             this.zalogujButton.Enabled = false;
@@ -144,28 +202,6 @@ namespace BSKProject2
             if (this.profilComboBox.SelectedItem == null)
                 return;
 
-            //zaktualizowanie informacji w bazie o zalogowaniu uzytkownika.
-            try
-            {
-                this.sqlConnection.Open();
-
-                SqlDataReader sqlReader = null;
-                string command = "UPDATE Uzytkownicy"
-                    + " SET czy_zalogowany='true'"
-                    + " WHERE _login='" + this.loginTextBox.Text + "'";
-                SqlCommand sqlCommand = new SqlCommand(command, this.sqlConnection);
-                sqlReader = sqlCommand.ExecuteReader();
-
-                sqlCommand.Dispose();
-                sqlReader.Close();
-
-                this.sqlConnection.Close();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-
             //zapamietanie wybranego profilu uzytkownika.
             this.chosenProfile = this.profilComboBox.SelectedItem.ToString();
 
@@ -177,6 +213,8 @@ namespace BSKProject2
         //metoda do zresetowania okna logowania po wylogowaniu uzytkownika.
         public void resetWindow()
         {
+            this.userLogInFlag = false;
+
             this.loginTextBox.Enabled = true;
             this.hasloTextBox.Text = "";
             this.hasloTextBox.Enabled = true;
@@ -186,6 +224,11 @@ namespace BSKProject2
             this.profilComboBox.Text = "";
             this.profilComboBox.Enabled = false;
             this.wybierzButton.Enabled = false;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {   if(userLogInFlag)
+                logoutFromDatabase();
         }
     }
 }

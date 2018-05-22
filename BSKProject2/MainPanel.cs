@@ -15,6 +15,7 @@ namespace BSKProject2
     public partial class MainPanel : Form
     {
         //// Pola stale
+        #region stale
 
         //tymczasowa zawartosc pustych komorek.
         private const string tempCellValue = "\0";
@@ -28,7 +29,9 @@ namespace BSKProject2
                 "Initial Catalog=BSKproj2;" +
                 "Trusted_Connection=yes;");
 
+        #endregion
         //// Pola zmienne
+        #region zmienne
 
         private Form1 mainForm;         //ekran logowania. Zawiera wazne informacje.
 
@@ -38,9 +41,11 @@ namespace BSKProject2
 
         private string beforeEditCellValue;     //zawiera tresc komorki na czas jej edycji.
 
-        private List<RowEditedListType> rowsEdited; //lista indeksow edytowanych wierszy.
+        private List<RowEditedList> rowsEdited; //lista indeksow edytowanych wierszy.
         private List<int> rowsAdded;                //lista indeksow dodanych wierszy.
         private List<int> rowsSelected;             //lista indeksow wybranych wierszy (np. do usuniecia).
+        
+        #endregion
 
         public MainPanel(Form1 form)
         {
@@ -48,7 +53,7 @@ namespace BSKProject2
             this.mainForm = form;
             this.isThisMainPanel = true;
 
-            rowsEdited = new List<RowEditedListType>();
+            rowsEdited = new List<RowEditedList>();
             rowsAdded = new List<int>();
             rowsSelected = new List<int>();
 
@@ -333,7 +338,7 @@ namespace BSKProject2
         /// <returns></returns>
         private bool cellEndEdit_isEditedRowEdited(DataGridViewCellEventArgs e)
         {
-            foreach (RowEditedListType row in this.rowsEdited)
+            foreach (RowEditedList row in this.rowsEdited)
             {
                 if (row.rowIndex == e.RowIndex) //edytowano juz ten wiersz.
                 {
@@ -348,6 +353,40 @@ namespace BSKProject2
                 }
             }
             return false;
+        }
+
+        /// <summary>
+        /// Metoda do sprawdzania nowych wierszy czy sa puste
+        ///     jesli tak to usuwa wiersz z listy indeksow dodanych wierszy
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        private bool deleteRowIfEmpty(int rowIndex)
+        {
+            bool rowIsEmpty = true;
+            bool checkBoxColumn = true;
+            foreach (DataGridViewCell cell in dataGridView1.Rows[rowIndex].Cells)
+            {
+                if (checkBoxColumn)
+                {
+                    checkBoxColumn = false;
+                    continue;
+                }
+
+                if (cell.Value != null)
+                {
+                    rowIsEmpty = false;
+                    break;
+                }
+            }
+
+            if (rowIsEmpty)
+            {
+                rowsAdded.Remove(rowIndex);
+                //dataGridView1.Rows.Remove(dataGridView1.Rows[rowIndex]);
+            }
+
+            return rowIsEmpty;
         }
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
@@ -368,6 +407,9 @@ namespace BSKProject2
             if (this.beforeEditCellValue.Equals(endEditCellValue))
                 return; //nie dokonano zmian w komorce.
 
+            if (deleteRowIfEmpty(e.RowIndex))
+                return;
+
             if (cellEndEdit_isAddedRowEdited(e))
                 return;
 
@@ -375,7 +417,7 @@ namespace BSKProject2
                 return;
             
             //obsluga przypadku gdy edytowano komorke w kolumnie klucza tabeli.
-            RowEditedListType newRowEdited = new RowEditedListType();
+            RowEditedList newRowEdited = new RowEditedList();
             if (e.ColumnIndex == 1)
                 newRowEdited.primaryKey = beforeEditCellValue;
             else
@@ -392,6 +434,21 @@ namespace BSKProject2
         {
             if (e.RowIndex == dataGridView1.NewRowIndex && e.RowIndex != 0)
                 this.rowsAdded.Add(e.RowIndex - 1); //wykryto nowy wiersz, ALE nie ten co modyfikujemy, a nastepny zaraz za nim!
+        }
+
+        private void noweOknoButton_Click(object sender, EventArgs e)
+        {
+            MainPanel mainPanel = new MainPanel(this.mainForm);
+            mainPanel.Show();
+            mainPanel.isThisMainPanel = false;
+            mainPanel.wylogujButton.Hide();
+            mainPanel.noweOknoButton.Hide();
+            supportWindows.Add(mainPanel);
+        }
+
+        private void odswiezButton_Click(object sender, EventArgs e)
+        {
+            this.tableComboBox_SelectedIndexChanged(sender, e);
         }
 
         /// <summary>
@@ -430,6 +487,8 @@ namespace BSKProject2
 
             return listOfTypes;
         }
+
+        #region INSERT
 
         private void insertButton_Click(object sender, EventArgs e)
         {
@@ -507,6 +566,10 @@ namespace BSKProject2
             rowsAdded.Clear();
         }
 
+        #endregion
+
+        #region UPDATE
+
         private void updateButton_Click(object sender, EventArgs e)
         {
             //zaladowanie do bazy zuaktualizowane wiersze.
@@ -518,7 +581,7 @@ namespace BSKProject2
             //      reszta => z ''
             List<String> listOfTypes = listOfColumnTypes();
 
-            foreach (RowEditedListType row in rowsEdited)
+            foreach (RowEditedList row in rowsEdited)
             {
                 string updateCommand = "UPDATE " + this.tableComboBox.SelectedItem.ToString() + " SET";
                 bool firstParam = true;
@@ -593,6 +656,10 @@ namespace BSKProject2
             rowsEdited.Clear();
         }
 
+        #endregion
+
+        #region DELETE
+
         /// <summary>
         /// Metoda usuwa swiezo dodane wiersze
         /// </summary>
@@ -629,7 +696,7 @@ namespace BSKProject2
             foreach (DataGridViewRow rowToRemove in rowsToRemoveList.ToList())
             {
                 string deleteCommandCondition = dataGridView1.Columns[1].Name+"="+rowToRemove.Cells[1].Value.ToString();
-                foreach (RowEditedListType editedRow in rowsEdited.ToList())
+                foreach (RowEditedList editedRow in rowsEdited.ToList())
                 {
                     if (editedRow.rowIndex == rowToRemove.Index) //Usuniecie edytowanego wiersza
                     {
@@ -686,35 +753,6 @@ namespace BSKProject2
             rowsSelected.Clear();
         }
 
-        private void noweOknoButton_Click(object sender, EventArgs e)
-        {
-            MainPanel mainPanel = new MainPanel(this.mainForm);
-            mainPanel.Show();
-            mainPanel.isThisMainPanel = false;
-            mainPanel.wylogujButton.Hide();
-            mainPanel.noweOknoButton.Hide();
-            supportWindows.Add(mainPanel);
-        }
-    }
-
-    /// <summary>
-    /// Klasa dla listy, ktora rejestrowalaby edycje komorek poszczegolnych wierszy.
-    /// </summary>
-    class RowEditedListType
-    {
-        public object primaryKey;
-        public string primaryKeyColumnName;
-        public int rowIndex;
-        public List<int> columnIndexes;
-
-        public RowEditedListType()
-        {
-            columnIndexes = new List<int>();
-        }
-
-        public void decrementIndex()
-        {
-            this.rowIndex--;
-        }
+        #endregion
     }
 }
