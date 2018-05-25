@@ -405,7 +405,10 @@ namespace BSKProject2
                 endEditCellValue = tempCellValue;   //nadajemy im sztucznie wartosc.
             }
             if (this.beforeEditCellValue.Equals(endEditCellValue))
+            {
+                rowsAdded.Remove(e.RowIndex);
                 return; //nie dokonano zmian w komorce.
+            }
 
             if (deleteRowIfEmpty(e.RowIndex))
                 return;
